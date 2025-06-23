@@ -4,8 +4,7 @@ defmodule Scoot.TFAPoller do
   use GenServer
   #@default_timeout 30_000
   @tfa_poll_msec 15_000
-  @line_tfa_endpoint "https://api.tfl.gov.uk/Line/Route?serviceTypes=Regular"
-  #@wbsock_endpoint 
+  @wbsock_endpoint 
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{})
@@ -25,9 +24,9 @@ defmodule Scoot.TFAPoller do
   end
 
   defp poll_tfl_api do
-    p_id = Process.send_after(self(), :work, @tfa_poll_msec)
-    Logger.info("[#{inspect p_id}]: Successfull, sending next process.")
+    Process.send_after(self(), :work, @tfa_poll_msec)
   end
+
 
   defp fetch_lines_info(endpoint) do
     Logger.info("[fetch_lines_info]: Fetching #{endpoint}")
