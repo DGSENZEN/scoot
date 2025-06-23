@@ -58,6 +58,24 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+
+config :scoot, Scoot.TFAPoller,
+        endpoints: [
+        %{name: :tube_lines,
+          url: "https://api.tfl.gov.uk/Line/Mode/tube/Route?serviceTypes=Regular",
+          },
+        %{name: :bus_lines,
+          url: "https://api.tfl.gov.uk/Line/Mode/bus/Route?serviceTypes=Regular"},
+        %{name: :overground_lines,
+          url: "https://api.tfl.gov.uk/Line/Mode/overground/Route?serviceTypes=Regular"},
+        %{name: :national_rail,
+          url: "https://api.tfl.gov.uk/Line/Mode/national-rail/Route?serviceTypes=Regular"},
+        %{name: :tram_lines,
+          url: "https://api.tfl.gov.uk/Line/Mode/tram/Route?serviceTypes=Regular"},
+        %{name: :dlr,
+          url: "https://api.tfl.gov.uk/Line/Mode/dlr/Route?serviceTypes=Regular"}
+  ]
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
