@@ -4,7 +4,7 @@ defmodule Scoot.TFAPoller do
   use GenServer
   #@default_timeout 30_000
   @tfa_poll_msec 15_000
-  @wbsock_endpoint 
+  @wbsock_endpoint "http://localhost:4000/info"
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{})
@@ -20,6 +20,7 @@ defmodule Scoot.TFAPoller do
   def handle_info(:work, state) do
     state = fetch_tfa_info(state)
     poll_tfl_api()
+    #Process.send_after(poll_pid, send_wbsock(state, @wbsock_endpoint), 1_000)
     {:noreply, state}
   end
 
@@ -27,6 +28,18 @@ defmodule Scoot.TFAPoller do
     Process.send_after(self(), :work, @tfa_poll_msec)
   end
 
+  defp send_wbsock(data, wbsock_endpoint) do
+    Logger.info("[send_wbsock]: Initializing conn to websocket...")
+    case Req.post(wbsock_endpoint, body: data) do
+      {:ok, %Req.Response{status: 200, body: body}} ->
+        Logger.info("[send_wbsock]: Succesful post to websocket!")
+        {:ok, body}
+      {:ok, %Req.Response{status: status}} ->
+        {:error, "[send_wbsock]: Websocket responded with #{status}"}
+      {:error, %Req.HTTPError{reason: reason}} ->
+        {:error, "[send_wbsock]: Req error: #{reason}"}
+    end
+  end
 
   defp fetch_lines_info(endpoint) do
     Logger.info("[fetch_lines_info]: Fetching #{endpoint}")
