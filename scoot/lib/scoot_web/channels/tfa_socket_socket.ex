@@ -1,4 +1,4 @@
-defmodule ScootWeb.TFASocketSocket do
+defmodule ScootWeb.TFASocket do
   use Phoenix.Socket
 
   # A Socket handler
@@ -19,6 +19,7 @@ defmodule ScootWeb.TFASocketSocket do
   # See the [`Channels guide`](https://hexdocs.pm/phoenix/channels.html)
   # for further details.
 
+    channel "tfa_room:*", Scoot.TFARoomChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
