@@ -1,4 +1,4 @@
-defmodule Scoot.TFAPoller do
+defmodule Scoot.TFAPublisher do
   
   require Logger
   use GenServer
@@ -20,25 +20,22 @@ defmodule Scoot.TFAPoller do
   def handle_info(:work, state) do
     state = fetch_tfa_info(state)
     poll_tfl_api()
-    #Process.send_after(poll_pid, send_wbsock(state, @wbsock_endpoint), 1_000)
+    publish(state)
     {:noreply, state}
+  end
+
+  defp publish(data) do
+    with {:ok, connection} <- AMQP.Connection.open(),
+         {:ok, channel} <- AMQP.Channel.open(connection) do
+           AMQP.Queue.declare(channel, "tfa_queue", durable: true)
+           result = AMQP.Basic.publish(channel, "", "tfa_queue", data, persistent: true)
+           AMQP.Connection.close(connection)
+           result
+    end
   end
 
   defp poll_tfl_api do
     Process.send_after(self(), :work, @tfa_poll_msec)
-  end
-
-  defp send_wbsock(data, wbsock_endpoint) do
-    Logger.info("[send_wbsock]: Initializing conn to websocket...")
-    case Req.post(wbsock_endpoint, body: data) do
-      {:ok, %Req.Response{status: 200, body: body}} ->
-        Logger.info("[send_wbsock]: Succesful post to websocket!")
-        {:ok, body}
-      {:ok, %Req.Response{status: status}} ->
-        {:error, "[send_wbsock]: Websocket responded with #{status}"}
-      {:error, %Req.HTTPError{reason: reason}} ->
-        {:error, "[send_wbsock]: Req error: #{reason}"}
-    end
   end
 
   defp fetch_lines_info(endpoint) do

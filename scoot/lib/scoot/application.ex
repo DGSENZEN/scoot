@@ -17,8 +17,9 @@ defmodule Scoot.Application do
       # Start a worker by calling: Scoot.Worker.start_link(arg)
       # {Scoot.Worker, arg},
       # Start to serve requests, typically the last entry
+      {Scoot.Pipeline, []},
       ScootWeb.Endpoint,
-      Scoot.TFAPoller
+      Scoot.TFAPublisher
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
