@@ -58,7 +58,9 @@ defmodule Scoot.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:req, "~> 0.5.0"}
+      {:req, "~> 0.5.0"},
+      {:broadway, "~> 1.0"},
+      {:broadway_rabbitmq, "~> 0.7"}
     ]
   end
 

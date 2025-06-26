@@ -59,7 +59,7 @@ config :logger, :console,
   metadata: [:request_id]
 
 
-config :scoot, Scoot.TFAPoller,
+config :scoot, Scoot.TFAPublisher,
         endpoints: [
         %{name: :tube_lines,
           url: "https://api.tfl.gov.uk/Line/Mode/tube/Route?serviceTypes=Regular",
