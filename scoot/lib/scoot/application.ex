@@ -18,6 +18,7 @@ defmodule Scoot.Application do
       # {Scoot.Worker, arg},
       # Start to serve requests, typically the last entry
       {Scoot.Pipeline, []},
+      {AMQP.Connection, name: :amqp_connection},
       ScootWeb.Endpoint,
       Scoot.TFAPublisher
     ]
